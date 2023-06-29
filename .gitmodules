@@ -1,0 +1,3 @@
+[submodule "puredata/src/tinyosc"]
+	path = puredata/src/tinyosc
+	url = git@github.com:mhroth/tinyosc.git

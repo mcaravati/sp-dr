@@ -1,0 +1,7 @@
+{
+    "documentId": "f2386b54d01e567137fd9772",
+    "assemblyName": "Frame",
+    "noDynamics": true,
+    "outputFormat": "urdf",
+    "useFixedLinks": true
+}

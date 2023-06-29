@@ -1,0 +1,87 @@
+<robot name="onshape">
+<link name="part_1_1">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<mass value="0" />
+<inertia ixx="0" ixy="0"  ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+<visual><geometry><box size="0 0 0" /></geometry></visual>
+</link>
+
+<link name="part_1_1_1">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0" />
+<mass value="0" />
+<inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+<visual>
+<origin xyz="0 0 -4.33681e-19" rpy="0 -0 0" />
+<geometry>
+<mesh filename="package://part_1.stl"/>
+</geometry>
+<material name="part_1_1_1_visual_material">
+<color rgba="0.866667 0.321569 0.156863 1.0"/>
+</material>
+</visual>
+</link>
+<joint name="part_1_1_1_fixing" type="fixed">
+<origin xyz="0 0 0" rpy="0 -0 0" />
+<parent link="part_1_1" />
+<child link="part_1_1_1" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" />
+<joint_properties friction="0.0"/>
+</joint>
+
+<link name="part_1_1_2">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0" />
+<mass value="0" />
+<inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+<visual>
+<origin xyz="0 0 -3.25261e-19" rpy="-6.12323e-17 -0 6.12323e-17" />
+<geometry>
+<mesh filename="package://part_3.stl"/>
+</geometry>
+<material name="part_1_1_2_visual_material">
+<color rgba="0.372549 0.654902 0.239216 1.0"/>
+</material>
+</visual>
+</link>
+<joint name="part_1_1_2_fixing" type="fixed">
+<origin xyz="0 0 0" rpy="0 -0 0" />
+<parent link="part_1_1" />
+<child link="part_1_1_2" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" />
+<joint_properties friction="0.0"/>
+</joint>
+
+<link name="part_1_1_3">
+<inertial>
+<origin xyz="0 0 0" rpy="0 0 0" />
+<mass value="0" />
+<inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+</inertial>
+<visual>
+<origin xyz="3.25261e-19 0 0" rpy="0 -6.12323e-17 0" />
+<geometry>
+<mesh filename="package://part_2.stl"/>
+</geometry>
+<material name="part_1_1_3_visual_material">
+<color rgba="0.0862745 0.317647 0.690196 1.0"/>
+</material>
+</visual>
+</link>
+<joint name="part_1_1_3_fixing" type="fixed">
+<origin xyz="0 0 0" rpy="0 -0 0" />
+<parent link="part_1_1" />
+<child link="part_1_1_3" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" />
+<joint_properties friction="0.0"/>
+</joint>
+
+
+</robot>
