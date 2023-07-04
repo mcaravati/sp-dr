@@ -1,0 +1,33 @@
+name: compile-extensions
+on: [push]
+jobs:
+  compile-linux-x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Install cmake
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake
+      - name: Install puredata
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y puredata-dev
+      - name: Build and install flext
+        continue-on-error: true
+        run: |
+          cd puredata/flext
+          ./bootstrap.sh
+          ./configure --enable-system=pd --with-sdkdir=/usr/include/pd
+          make -j$(nproc)
+          sudo make install
+      - name: Build puredata externals
+        run: |
+          ls /usr/local/lib
+          cd puredata
+          mkdir build
+          cd build
+          cmake ..
+          make

@@ -3,7 +3,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#include <flext.h>
+#include "flext/source/flext.h"
 #include "tinyosc/tinyosc.h"
 
 #define PORT 9000
