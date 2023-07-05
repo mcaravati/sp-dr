@@ -39,6 +39,13 @@
       <artifactId>oscp5</artifactId>
       <version>0.9.8</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.apple/AppleJavaExtensions -->
+    <dependency>
+      <groupId>com.apple</groupId>
+      <artifactId>AppleJavaExtensions</artifactId>
+      <version>1.4</version>
+    </dependency>
   </dependencies>
 
   <build>

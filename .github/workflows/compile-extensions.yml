@@ -1,7 +1,7 @@
 name: compile-extensions
 on: [push]
 jobs:
-  compile-linux-x86_64:
+  compile-puredata-linux-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,4 +30,19 @@ jobs:
           mkdir build
           cd build
           cmake ..
+          make
+  compile-processing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Install Java and Maven
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'oracle'
+      - uses: stCarolas/setup-maven@v4.5
+      # Compile the extension
+      - name: Compile the extension
+        run: |
+          cd processing
           make
