@@ -31,6 +31,10 @@ jobs:
           cd build
           cmake ..
           make
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ergojunior.pd_linux
+          path: ~/Documents/Pd/externals/ergojunior/ergojunior.pd_linux
   compile-processing:
     runs-on: ubuntu-latest
     steps:
@@ -46,3 +50,7 @@ jobs:
         run: |
           cd processing
           make
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ergojunior.jar
+          path: processing/target/ergo_junior_controller-1.0-SNAPSHOT.jar
