@@ -3,12 +3,11 @@
 """
 
 from typing import Union
-from ControlServer import ControlServer
-from osc4py3.as_eventloop import *
+from server.ControlServer import ControlServer
+from osc4py3.as_eventloop import osc_startup, osc_udp_server, osc_method, osc_process, osc_terminate
 import logging
 from StoppableThread import StoppableThread
 import threading
-import osc4py3.oscmethod as osm
 
 class OSCServer(ControlServer):
     def __init__(self, **kwargs) -> None:
@@ -34,6 +33,9 @@ class OSCServer(ControlServer):
         osc_udp_server("127.0.0.1", 9000, "server")
 
         osc_method("/set-motor", self.forward_kinematics_handler)
+        osc_method("/set-led", self.motor_led_handler)
+        osc_method("/set-torque", self.torque_handler)
+        osc_method("/set-speed", self.speed_handler)
 
         self._osc_server = StoppableThread(target=self._osc_process)
         self._osc_server.start()
@@ -52,3 +54,12 @@ class OSCServer(ControlServer):
 
     def forward_kinematics_handler(self, *args) -> None:
         return super().forward_kinematics_handler(args)
+    
+    def motor_led_handler(self, *args) -> None:
+        return super().motor_led_handler(args)
+    
+    def torque_handler(self, *args) -> None:
+        return super().torque_handler(args)
+    
+    def speed_handler(self, *args) -> None:
+        return super().speed_handler(args)

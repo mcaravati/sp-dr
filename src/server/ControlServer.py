@@ -2,8 +2,7 @@
     Abstract class for the control server via real-time communication protocol
 """
 from abc import ABC, abstractmethod
-from typing import Callable, List, Optional, Tuple, Union
-from RobotControl import RobotControl
+from robot_control.RobotControl import RobotControl
 
 class ControlServer(ABC):
     """
@@ -42,10 +41,56 @@ class ControlServer(ABC):
             Handle the message for the forward kinematics
         """
         self._set_motor(*args)
-        pass
+
+    @abstractmethod
+    def motor_led_handler(self, args) -> None:
+        """
+            Handle the message for the motor led
+        """
+        self._set_led(*args)
+
+    @abstractmethod
+    def torque_handler(self, args) -> None:
+        """
+            Handle the message for the motor torque
+        """
+        self._set_torque(*args)
+
+    @abstractmethod
+    def speed_handler(self, args) -> None:
+        """
+            Handle the message for the motor speed
+        """
+        self._set_motor_speed(*args)
 
     def _set_motor(self, motor: int = 1, value: float = 0.0) -> None:
         """
             Set the motor to the value
         """
         self._robot_control.set_motor_angle(motor, value)
+
+    def _set_led(self, motor: int = 1, value: bool = False) -> None:
+        """
+            Set the led of the specified motor
+        """
+        if value:
+            self._robot_control.set_led_on(motor)
+        else:
+            self._robot_control.set_led_off(motor)
+
+    def _set_torque(self, motor: int = 1, value: bool = False) -> None:
+        """
+            Set the torque of the specified motor
+        """
+        if value:
+            self._robot_control.set_torque_on(motor)
+        else:
+            self._robot_control.set_torque_off(motor)
+
+    def _set_motor_speed(self, motor: int = 1, value: float = 0.0) -> None:
+        """
+            Set the motor speed
+        """
+        self._robot_control.set_motor_speed(motor, value)
+
+    

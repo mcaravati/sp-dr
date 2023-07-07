@@ -1,4 +1,5 @@
 #include <Dynamixel2Arduino.h>
+#include "op_codes.h"
 
 #define DXL_SERIAL Serial1
 #define DEBUG_SERIAL Serial
@@ -68,10 +69,10 @@ void loop()
 {
   if (DEBUG_SERIAL.available() > 0)
   {
-    byte buffer[2] = {0};
-    size_t bytes_read = DEBUG_SERIAL.readBytes(buffer, 2);
+    byte buffer[3] = {0};
+    size_t bytes_read = DEBUG_SERIAL.readBytes(buffer, 3);
 
-    if (bytes_read % 2 != 0)
+    if (bytes_read % 3 != 0)
     {
 #ifdef DEBUG
       DEBUG_SERIAL.println("Invalid message length");
@@ -79,10 +80,63 @@ void loop()
       return;
     }
 
-    _set_motor((int)buffer[0], (int)buffer[1]);
+    byte header = buffer[0];
+    byte motorID = buffer[1];
+    byte data = buffer[2];
+
+    if (motorID < 1 || motorID > 6)
+    {
+#ifdef DEBUG
+      DEBUG_SERIAL.println("Invalid motor ID");
+#endif
+      return;
+    }
 
 #ifdef DEBUG
-    DEBUG_SERIAL.printf("Motor ID: %d. Motor Position: %d\n", (int)buffer[0], (int)buffer[1]);
+    DEBUG_SERIAL.printf("Received packet: Header: 0x%02X, Motor ID: %d, Data: 0x%02X\n", header, motorID, data);
 #endif
+
+    switch (header)
+    {
+      case OP_LED: // Setting the LED state of a motor
+        if (data == 0x00)
+        {
+          // Turn off LED for motorID
+          dxl.ledOff(motorID);
+        }
+        else if (data == 0x01)
+        {
+          // Turn on LED for motorID
+          dxl.ledOn(motorID);
+        }
+        break;
+
+      case OP_TORQUE: // Setting the torque state of a motor
+        if (data == 0x00)
+        {
+          // Turn off torque for motorID
+          dxl.torqueOff(motorID);
+        }
+        else if (data == 0x01)
+        {
+          // Turn on torque for motorID
+          dxl.torqueOn(motorID);
+        }
+        break;
+
+      case OP_SPEED: // Setting the speed of a motor
+        dxl.writeControlTableItem(GOAL_VELOCITY, motorID, data);
+        break;
+
+      case OP_POSITION: // Setting the angle of a motor
+        _set_motor(motorID, data);
+        break;
+
+      default:
+#ifdef DEBUG
+        DEBUG_SERIAL.println("Invalid header");
+#endif
+        break;
+    }
   }
 }

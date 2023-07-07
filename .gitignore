@@ -4,3 +4,4 @@ venv/
 report/
 build/
 processing/target
+osc_client.py

@@ -1,13 +1,17 @@
-from OSCServer import OSCServer
-from SerialControl import SerialControl
+from server.OSCServer import OSCServer
+from robot_control.SerialControl import SerialControl
+from robot_control.DummyRobotControl import DummyRobotControl
 
 if __name__ == "__main__":
+    robot_control = DummyRobotControl()
+    # robot_control = SerialControl(
+    #         port="/dev/ttyACM1",
+    #         baudrate=115200,
+    #         verbose=True
+    #     )
+
     server = OSCServer(
-        robot_control=SerialControl(
-            port="/dev/ttyACM0",
-            baudrate=115200,
-            verbose=True
-        ),
+        robot_control=robot_control,
     )
     server.start()
 
