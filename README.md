@@ -5,6 +5,9 @@ SP//dr is a collection of extensions for various creative coding platforms aimin
 
 The arm in itself is controlled by an OpenCM 9.04 development board communicating with the Python OSC server through a serial connection.
 
+## Documentation
+The documentation is available [on the project's wiki](https://github.com/mcaravati/sp-dr/wiki).
+
 ## Special thanks
 - [Kıvanç TATAR](https://kivanctatar.com/) for guiding me through the development of the project.
 - [Nicolas GRY](https://github.com/grybouilli/) for his work to bring flext up-to-date.
