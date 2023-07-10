@@ -18,7 +18,7 @@ jobs:
       - name: Build and install flext
         continue-on-error: true
         run: |
-          cd creative-extentions/puredata/flext
+          cd creative-extensions/puredata/flext
           ./bootstrap.sh
           ./configure --enable-system=pd --with-sdkdir=/usr/include/pd
           make -j$(nproc)
