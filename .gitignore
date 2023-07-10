@@ -3,5 +3,5 @@ venv/
 .vscode/
 report/
 build/
-processing/target
+creative-extensions/processing/target
 osc_client.py
