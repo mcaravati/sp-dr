@@ -1,4 +1,5 @@
 from server.OSCServer import OSCServer
+from server.WebSocketServer import WebSocketServer
 from robot_control.SerialControl import SerialControl
 from robot_control.DummyRobotControl import DummyRobotControl
 
@@ -10,9 +11,13 @@ if __name__ == "__main__":
     #         verbose=True
     #     )
 
-    server = OSCServer(
+
+    server = WebSocketServer(
         robot_control=robot_control,
     )
+    # server = OSCServer(
+    #     robot_control=robot_control,
+    # )
     server.start()
 
     while True:
