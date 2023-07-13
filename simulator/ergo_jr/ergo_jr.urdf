@@ -82,7 +82,7 @@
   </link>
   <joint
     name="m1"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 0 0.0327993216120967"
       rpy="-6.12303176911189E-17 0 0" />
@@ -135,7 +135,7 @@
   </link>
   <joint
     name="m2"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 0 0.0240006783879033"
       rpy="1.5707963267949 0 0" />
@@ -188,7 +188,7 @@
   </link>
   <joint
     name="m3"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 0.054 0"
       rpy="0 0 0" />
@@ -241,7 +241,7 @@
   </link>
   <joint
     name="m4"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 0.0298217741221248 0"
       rpy="3.14159265358979 0 0" />
@@ -294,7 +294,7 @@
   </link>
   <joint
     name="m5"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 -0.0151782258778753 -0.048"
       rpy="-1.5707963267949 0 0" />
@@ -347,7 +347,7 @@
   </link>
   <joint
     name="m6"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 0.054 0"
       rpy="1.5707963267949 1.5707963267949 0" />
