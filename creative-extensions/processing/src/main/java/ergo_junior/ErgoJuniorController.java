@@ -1,6 +1,8 @@
 package ergo_junior;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Arrays;
 import processing.core.*;
 import oscP5.*;
 import netP5.*;
@@ -42,10 +44,10 @@ public class ErgoJuniorController {
     /**
      * Save the motor angle in memory and send it to the OSC server if it has changed.
      * 
-     * @param motorId {int} The motor id.
-     * @param motorAngle {int} The motor angle.
+     * @param motorId {Integer} The motor id.
+     * @param motorAngle {Integer} The motor angle.
      */
-    public void setMotorAngle(int motorId, int motorAngle) {
+    public void setMotorAngle(Integer motorId, Integer motorAngle) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
@@ -57,73 +59,73 @@ public class ErgoJuniorController {
             int prevAngle = this.motorMap.get(motorId);
             if (prevAngle != motorAngle) {
                 this.motorMap.put(motorId, motorAngle);
-                sendPacket("/set-motor", motorId, motorAngle);
+                sendPacket("/set-motor", Arrays.asList(motorId, motorAngle));
             }
         } else {
             this.motorMap.put(motorId, motorAngle);
-            sendPacket("/set-motor", motorId, motorAngle);
+            sendPacket("/set-motor", Arrays.asList(motorId, motorAngle));
         }
     }
 
     /**
      * Set the LED of the given motor to on.
      * 
-     * @param motorId {int} The motor id.
+     * @param motorId {Integer} The motor id.
      */
-    public void setLedOn(int motorId) {
+    public void setLedOn(Integer motorId) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
 
-        sendPacket("/set-led", motorId, 1);
+        sendPacket("/set-led", Arrays.asList(motorId, 1));
     }
 
     /**
      * Set the LED of the given motor to off.
      * 
-     * @param motorId {int} The motor id.
+     * @param motorId {Integer} The motor id.
      */
-    public void setLedOff(int motorId) {
+    public void setLedOff(Integer motorId) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
 
-        sendPacket("/set-led", motorId, 0);
+        sendPacket("/set-led", Arrays.asList(motorId, 0));
     }
 
     /**
      * Set the torque of the given motor to on.
      * 
-     * @param motorId {int} The motor id.
+     * @param motorId {Integer} The motor id.
      */
-    public void setTorqueOn(int motorId) {
+    public void setTorqueOn(Integer motorId) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
 
-        sendPacket("/set-torque", motorId, 1);
+        sendPacket("/set-torque", Arrays.asList(motorId, 1));
     }
 
     /**
      * Set the torque of the given motor to off.
      * 
-     * @param motorId {int} The motor id.
+     * @param motorId {Integer} The motor id.
      */
-    public void setTorqueOff(int motorId) {
+    public void setTorqueOff(Integer motorId) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
 
-        sendPacket("/set-torque", motorId, 0);
+        sendPacket("/set-torque", Arrays.asList(motorId, 0));
     }
 
     /**
      * Sets the goal speed of a given motor.
      * 
-     * @param motorId {int} The motor id.
-     * @param motorSpeed {int} The motor speed.
+     * @param motorId {Integer} The motor id.
+     * @param motorSpeed {Integer} The motor speed.
      */
-    public void setMotorSpeed(int motorId, int motorSpeed) {
+    public void setMotorSpeed(Integer motorId, Integer motorSpeed) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
@@ -131,35 +133,42 @@ public class ErgoJuniorController {
             throw new IllegalArgumentException(MOTOR_SPEED_ERROR_MESSAGE);
         }
 
-        sendPacket("/set-speed", motorId, motorSpeed);
+        sendPacket("/set-speed", Arrays.asList(motorId, motorSpeed));
     }
 
     /**
      * Make the robot point to the given coordinates.
      * 
-     * @param x {float} The x coordinate.
-     * @param y {float} The y coordinate.
-     * @param z {float} The z coordinate.
+     * @param x {Float} The x coordinate.
+     * @param y {Float} The y coordinate.
+     * @param z {Float} The z coordinate.
      */
-    public void inverseKinematics(float x, float y, float z) {
-        OscMessage msg = new OscMessage("/inverse-kinematics");
-        msg.add(x);
-        msg.add(y);
-        msg.add(z);
-        oscP5.send(msg, this.oscServerAddress);
+    public void inverseKinematics(Float x, Float y, Float z) {
+        sendPacket("/inverse-kinematics", Arrays.asList(x, y, z));
     }
 
     /**
      * Simply send the motor packet to the OSC server.
      * 
      * @param path {String} The OSC path.
-     * @param motorId {int} The motor id.
-     * @param value {int} Arbitrary value for the given path.
+     * @param args {List<Object>} The arguments to send to the OSC server.
      */
-    private void sendPacket(String path, int motorId, int value) {
+    private void sendPacket(String path, List<Object> args) {
+        // Check that the arguments are integers or floats.
+        for (Object arg : args) {
+            if (!(arg instanceof Integer) && !(arg instanceof Float) || arg == null) {
+                throw new IllegalArgumentException("Arguments must be integers or floats.");
+            }
+        }
+
         OscMessage msg = new OscMessage(path);
-        msg.add(motorId);
-        msg.add(value);
+        args.forEach(arg -> {
+            if (arg instanceof Integer) {
+                msg.add(((Integer) arg).intValue());
+            } else {
+                msg.add(((Float) arg).floatValue());
+            }
+        });
         oscP5.send(msg, this.oscServerAddress);
     }
 }
