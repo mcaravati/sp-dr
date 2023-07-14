@@ -117,6 +117,12 @@ public class ErgoJuniorController {
         sendPacket("/set-torque", motorId, 0);
     }
 
+    /**
+     * Sets the goal speed of a given motor.
+     * 
+     * @param motorId {int} The motor id.
+     * @param motorSpeed {int} The motor speed.
+     */
     public void setMotorSpeed(int motorId, int motorSpeed) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
@@ -126,6 +132,21 @@ public class ErgoJuniorController {
         }
 
         sendPacket("/set-speed", motorId, motorSpeed);
+    }
+
+    /**
+     * Make the robot point to the given coordinates.
+     * 
+     * @param x {float} The x coordinate.
+     * @param y {float} The y coordinate.
+     * @param z {float} The z coordinate.
+     */
+    public void inverseKinematics(float x, float y, float z) {
+        OscMessage msg = new OscMessage("/inverse-kinematics");
+        msg.add(x);
+        msg.add(y);
+        msg.add(z);
+        oscP5.send(msg, this.oscServerAddress);
     }
 
     /**
