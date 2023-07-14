@@ -36,6 +36,7 @@ class OSCServer(ControlServer):
         osc_method("/set-led", self.motor_led_handler)
         osc_method("/set-torque", self.torque_handler)
         osc_method("/set-speed", self.speed_handler)
+        osc_method("/inverse-kinematics", self.inverse_kinematics_handler)
 
         self._osc_server = StoppableThread(target=self._osc_process)
         self._osc_server.start()
@@ -63,3 +64,6 @@ class OSCServer(ControlServer):
     
     def speed_handler(self, *args) -> None:
         return super().speed_handler(args)
+    
+    def inverse_kinematics_handler(self, args) -> None:
+        return super().inverse_kinematics_handler(args)

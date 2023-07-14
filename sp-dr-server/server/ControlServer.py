@@ -43,6 +43,13 @@ class ControlServer(ABC):
         self._set_motor(*args)
 
     @abstractmethod
+    def inverse_kinematics_handler(self, args) -> None:
+        """
+            Handle the message for the inverse kinematics
+        """
+        self._compute_angles(*args)
+
+    @abstractmethod
     def motor_led_handler(self, args) -> None:
         """
             Handle the message for the motor led
@@ -68,6 +75,12 @@ class ControlServer(ABC):
             Set the motor to the value
         """
         self._robot_control.set_motor_angle(motor, value)
+
+    def _compute_angles(self, x: float = 0.0, y: float = 0.0, z: float = 0.0) -> None:
+        """
+            Compute the angles for an x, y, z position
+        """
+        return self._robot_control.compute_angles(x, y, z)
 
     def _set_led(self, motor: int = 1, value: bool = False) -> None:
         """

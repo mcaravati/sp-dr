@@ -28,7 +28,7 @@ if __name__ == "__main__":
         robot_control = DummyRobotControl()
     else:
         robot_control = SerialControl(
-            port=args.serial_port,
+            port=args.serial_port if args.serial_port else "/dev/ttyACM0",
             baudrate=115200,
             verbose=args.verbose
         )

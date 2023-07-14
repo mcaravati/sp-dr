@@ -141,6 +141,36 @@ p5.prototype.setSpeed = function (motor, speed) {
 }
 
 /**
+ * Make the robot point to position x, y, z
+ * 
+ * @param {number} x The x position
+ * @param {number} y The y position
+ * @param {number} z The z position
+ */
+p5.prototype.inverseKinematics = function (x, y, z) {
+    if (!x || !y || !z) {
+        throw new Error('inverseKinematics: x, y and z must be defined');
+    } else if (typeof x !== 'number' || typeof y !== 'number' || typeof z !== 'number') {
+        throw new Error('inverseKinematics: x, y and z must be numbers');
+    }
+
+    const message = JSON.stringify({
+        type: 'inverse-kinematics',
+        data: [
+            x,
+            y,
+            z
+        ]
+    });
+
+    if (!connectionOpened) {
+        messageQueue.push(message);
+    } else {
+        websocket.send(message);
+    }
+}
+
+/**
  * Sets the handler for when a message is received from the websocket connection
  * 
  * @param {function} handler The handler function

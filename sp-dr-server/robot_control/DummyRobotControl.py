@@ -27,4 +27,8 @@ class DummyRobotControl(RobotControl):
     def set_motor_speed(self, motor: int = 1, speed: int = 0) -> None:
         print(f"DummyRobotControl: Set motor {motor} speed to {speed}")
 
+    def compute_angles(self, x: float = 0, y: float = 0, z: float = 0) -> None:
+        print(f"DummyRobotControl: Compute angles for x={x}, y={y}, z={z}")
+        return super().compute_angles(x, y, z)
+
     

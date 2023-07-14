@@ -20,7 +20,8 @@ class WebSocketServer(ControlServer):
             'set-motor': self.forward_kinematics_handler,
             'set-led': self.motor_led_handler,
             'set-torque': self.torque_handler,
-            'set-speed': self.speed_handler
+            'set-speed': self.speed_handler,
+            'inverse-kinematics': self.inverse_kinematics_handler,
         }
 
     async def _server_wrapper(self):
@@ -56,3 +57,6 @@ class WebSocketServer(ControlServer):
     
     def speed_handler(self, args):
         return super().speed_handler(args)
+    
+    def inverse_kinematics_handler(self, args) -> None:
+        return super().inverse_kinematics_handler(args)

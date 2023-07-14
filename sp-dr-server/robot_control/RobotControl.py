@@ -2,6 +2,11 @@
     Abstract class for the robot control (Poppy Ergo Jr)
 """
 from abc import ABC, abstractmethod
+import ikpy.chain as ikchain
+import math
+
+urdf_file = "simulator/ergo_jr/ergo_jr.urdf"
+ergo_jr_chain = ikchain.Chain.from_urdf_file(urdf_file)
 
 class RobotControl(ABC):
     """
@@ -55,9 +60,21 @@ class RobotControl(ABC):
         """
         pass
 
-    def _inverse_kinematics_handler(self, *args) -> None:
+    @abstractmethod
+    def compute_angles(self, x: float = 0.0, y: float = 0.0, z: float = 0.0) -> None:
         """
             Inverse kinematics handler
         """
-        pass
+        for index, motor_angle in enumerate(ergo_jr_chain.inverse_kinematics([x, y, z])):
+            # Angle is in radian, convert to degree
+            motor_angle = math.degrees(motor_angle)
+
+            # Truncate
+            if motor_angle > 255:
+                motor_angle = 255
+            elif motor_angle < 0:
+                motor_angle = 0
+
+            self.set_motor_angle(index + 1, motor_angle)  
+        
         

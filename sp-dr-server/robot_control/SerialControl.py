@@ -78,4 +78,7 @@ class SerialControl(RobotControl):
         """
         self._send_serial(0x04, motor, value)
 
+    def compute_angles(self, x: float = 0, y: float = 0, z: float = 0) -> None:
+        return super().compute_angles(x, y, z)
+
     
