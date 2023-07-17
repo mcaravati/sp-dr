@@ -33,50 +33,52 @@ class SerialControl(RobotControl):
         if self._verbose:
             print(f"SerialControl: {self._serial.name} opened")
 
-    def _send_serial(self, op_code, motor_id, value) -> None:
+    def _send_serial(self, op_code, motor_id, value: str) -> None:
         """
             Send a serial command to the robot
         """
         # Create payload hex(op_code)hex(motor_id)hex(value)\n with 0-padded hex values using struct
-        payload = struct.pack("BBB", int(op_code), int(motor_id), int(value)).hex()
+        header = struct.pack("<BB", int(op_code), int(motor_id)).hex()
+        payload = header + value
+
         self._serial.write(bytearray.fromhex(payload))
 
     def set_led_on(self, motor: int = 1) -> None:
         """
             Set the led of the specified motor on
         """
-        self._send_serial(0x01, motor, 0x01)
+        self._send_serial(0x01, motor, struct.pack("<B", 0x01).hex())
 
     def set_led_off(self, motor: int = 1) -> None:
         """
             Set the led of the specified motor off
         """
-        self._send_serial(0x01, motor, 0x00)
+        self._send_serial(0x01, motor, struct.pack("<B", 0x00).hex())
 
     def set_torque_on(self, motor: int = 1) -> None:
         """
             Set the torque of the specified motor on
         """
-        self._send_serial(0x02, motor, 0x01)
+        self._send_serial(0x02, motor, struct.pack("<B", 0x01).hex())
 
     def set_torque_off(self, motor: int = 1) -> None:
         """
             Set the torque of the specified motor off
         """
-        self._send_serial(0x02, motor, 0x00)
+        self._send_serial(0x02, motor, struct.pack("<B", 0x00).hex())
 
     def set_motor_speed(self, motor: int = 1, speed: int = 0) -> None:
         """
             Set the motor speed
         """
-        self._send_serial(0x03, motor, speed)
+        self._send_serial(0x03, motor, struct.pack("<l", speed).hex())
 
     @cooldown(0.009)
-    def set_motor_angle(self, motor: int = 1, value: int = 0) -> None:
+    def set_motor_angle(self, motor: int = 1, value: float = 0) -> None:
         """
             Set the motor to the value
         """
-        self._send_serial(0x04, motor, value)
+        self._send_serial(0x04, motor, struct.pack("<f", value).hex())
 
     def compute_angles(self, x: float = 0, y: float = 0, z: float = 0) -> None:
         return super().compute_angles(x, y, z)

@@ -9,6 +9,7 @@
 #define DXL_PROTOCOL_VERSION 2.0
 #define ANGLE_TOLERANCE 0.5
 #define VELOCITY 0
+#define BUFFER_SIZE 4
 
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
@@ -47,7 +48,7 @@ void setup()
  *
  * @param motor The Motor struct representing the motor to set the position for.
  */
-void _set_motor(int motor_index, int position)
+void _set_motor(int motor_index, float position)
 {
   int moving = 1;
 
@@ -69,10 +70,10 @@ void loop()
 {
   if (DEBUG_SERIAL.available() > 0)
   {
-    byte buffer[3] = {0};
-    size_t bytes_read = DEBUG_SERIAL.readBytes(buffer, 3);
+    byte buffer[BUFFER_SIZE] = {0};
+    size_t bytes_read = DEBUG_SERIAL.readBytes(buffer, 2);
 
-    if (bytes_read % 3 != 0)
+    if (bytes_read % 2 != 0)
     {
 #ifdef DEBUG
       DEBUG_SERIAL.println("Invalid message length");
@@ -82,7 +83,6 @@ void loop()
 
     byte header = buffer[0];
     byte motorID = buffer[1];
-    byte data = buffer[2];
 
     if (motorID < 1 || motorID > 6)
     {
@@ -99,38 +99,60 @@ void loop()
     switch (header)
     {
       case OP_LED: // Setting the LED state of a motor
-        if (data == 0x00)
         {
-          // Turn off LED for motorID
-          dxl.ledOff(motorID);
+          DEBUG_SERIAL.readBytes(buffer, 1);
+          byte data = buffer[0];
+
+          if (data == 0x00)
+          {
+            // Turn off LED for motorID
+            dxl.ledOff(motorID);
+          }
+          else if (data == 0x01)
+          {
+            // Turn on LED for motorID
+            dxl.ledOn(motorID);
+          }
+          break;
         }
-        else if (data == 0x01)
-        {
-          // Turn on LED for motorID
-          dxl.ledOn(motorID);
-        }
-        break;
 
       case OP_TORQUE: // Setting the torque state of a motor
-        if (data == 0x00)
         {
-          // Turn off torque for motorID
-          dxl.torqueOff(motorID);
+          DEBUG_SERIAL.readBytes(buffer, 1);
+          byte data = buffer[0];
+
+          if (data == 0x00)
+          {
+            // Turn off torque for motorID
+            dxl.torqueOff(motorID);
+          }
+          else if (data == 0x01)
+          {
+            // Turn on torque for motorID
+            dxl.torqueOn(motorID);
+          }
+          break;
         }
-        else if (data == 0x01)
-        {
-          // Turn on torque for motorID
-          dxl.torqueOn(motorID);
-        }
-        break;
 
       case OP_SPEED: // Setting the speed of a motor
-        dxl.writeControlTableItem(GOAL_VELOCITY, motorID, data);
-        break;
+        {
+          DEBUG_SERIAL.readBytes(buffer, 4);
+          int32_t data;
+          memcpy(&data, buffer, 4);
+
+          dxl.writeControlTableItem(GOAL_VELOCITY, motorID, data);
+          break;
+        }
 
       case OP_POSITION: // Setting the angle of a motor
-        _set_motor(motorID, data);
-        break;
+        {
+          DEBUG_SERIAL.readBytes(buffer, 4);
+          float data;
+          memcpy(&data, buffer, 4);
+
+          _set_motor(motorID, data);
+          break;
+        }
 
       default:
 #ifdef DEBUG
