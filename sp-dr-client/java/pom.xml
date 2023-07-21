@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>spdr.client</groupId>
+  <artifactId>spdr_client</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>spdr_client</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <jdk.version>1.7</jdk.version>
+    <javacpp.version>1.5.9</javacpp.version>
+    <compiler.plugin.version>2.3.2</compiler.plugin.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>javacpp</artifactId>
+      <version>${javacpp.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>properties</id>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+          <!-- 
+						puts the dependencies to the target/lib folder;
+						we would need the javacpp-1.1.jar to build the java wrapper shared library
+					 -->
+          <execution>
+            <id>dependencies</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 
+				everything (including dependencies) will be wrapped in a jar;
+				also indicate the main class to be executed my default
+			 -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>spdr.client.Spdr</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!--
+				specify where the libfoo.so is stored, after compile;
+				it is needed when the unit test is run
+			 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18</version>
+        <configuration>
+          <skipTests>false</skipTests>
+          <forkMode>once</forkMode>
+          <environmentVariables>
+            <LD_LIBRARY_PATH>target/classes/spdr/client/linux-x86_64</LD_LIBRARY_PATH>
+          </environmentVariables>
+          <systemProperties>
+            <property>
+              <name>java.library.tmpdir</name>
+              <value>target/classes/spdr/client/linux-x86_64</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <!-- this is how the shared library libfoo.so is built -->
+        <executions>
+          <execution>
+            <id>build-sharedlib</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>make</executable>
+              <commandlineArgs>java</commandlineArgs>
+              <workingDirectory>${basedir}/../lib</workingDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>clean-sharedlib</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>make</executable>
+              <commandlineArgs>clean</commandlineArgs>
+              <workingDirectory>${basedir}/../lib</workingDirectory>
+            </configuration>
+          </execution>
+          <!-- in here we build the Java-based wrapper shared library -->
+          <execution>
+            <id>build-jnilib</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>java</executable>
+              <!-- 
+								-jar points to the javacpp.jar
+								-Xcompiler may be followed by
+									-L specifies where the libfoo.so is
+									-I points to the foo.h header
+								eu.atspace.hash.FooLib is the wrapper class
+							 -->
+              <commandlineArgs>
+                -jar ${project.build.directory}/lib/javacpp-${javacpp.version}.jar -o libspdr.so -Xcompiler -L${basedir}/target/classes/spdr/client/linux-x86_64 -Xcompiler -I${basedir}/../lib -classpath target/classes spdr.client.Spdr
+              </commandlineArgs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
