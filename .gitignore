@@ -4,3 +4,5 @@ venv/
 report/
 build/
 target/
+*.o
+*.so

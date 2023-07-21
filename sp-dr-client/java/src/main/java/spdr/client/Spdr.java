@@ -1,3 +1,5 @@
+package spdr.client;
+
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
@@ -6,8 +8,8 @@ import org.bytedeco.javacpp.annotation.*;
 public class Spdr {
     public static class Client extends Pointer {
         static { Loader.load(); }
-        public Client(String host, int port) { allocate(); }
-        private native void allocate();
+        public Client(String host, int port) { allocate(host, port); }
+        private native void allocate(String host, int port);
 
         public native void connect();
         public native void disconnect();
