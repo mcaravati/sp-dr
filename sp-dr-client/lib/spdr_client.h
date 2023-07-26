@@ -9,15 +9,15 @@ namespace spdr {
     public:
         explicit Client(const std::string host, const int port);
         ~Client();
-        void connect() const;
-        void disconnect() const;
+        int connect() const;
+        int disconnect() const;
     private:
         std::string host;
         int port;
     };
 }
 
-#ifdef USE_EMSCRIPTEN
+#ifdef USE_EMSCRIPTEN // Javascript / WASM bindings
 #include <emscripten.h>
 #include <emscripten/bind.h>
 
@@ -29,5 +29,19 @@ EMSCRIPTEN_BINDINGS(spdr_client) {
         ;
 }
 #endif // USE_EMSCRIPTEN
+
+#ifdef USE_PYTHON // Python bindings using Boost::Python
+#include <boost/python.hpp>
+
+BOOST_PYTHON_MODULE(libspdr)
+{
+    using namespace boost::python;
+    class_<spdr::Client>("Client", init<std::string, int>())
+        .def("connect", &spdr::Client::connect)
+        .def("disconnect", &spdr::Client::disconnect)
+        ;
+}
+
+#endif // USE_PYTHON
 
 #endif // __SPDR_CLIENT_H__

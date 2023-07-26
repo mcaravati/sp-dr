@@ -10,11 +10,13 @@ namespace spdr {
         std::cout << "Client::~Client()" << std::endl;
     }
 
-    void Client::connect() const {
+    int Client::connect() const {
         std::cout << "Client::connect()" << std::endl;
+        return 0;
     }
 
-    void Client::disconnect() const {
+    int Client::disconnect() const {
         std::cout << "Client::disconnect()" << std::endl;
+        return 0;
     }
 }

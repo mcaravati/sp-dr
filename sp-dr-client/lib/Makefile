@@ -1,19 +1,23 @@
 CC=g++
 
-all: webassembly
+all: webassembly java python
 
 clean:
 	rm -f *.o *.so *.js *.wasm
 
-libspdr.so: spdr.o
-	$(CC) -shared -o libspdr.so spdr.o
-
-spdr.o: spdr_client.cpp spdr_client.h
-	$(CC) -c -fPIC spdr_client.cpp -o spdr.o
-
 webassembly: spdr_client.cpp spdr_client.h
 	em++ spdr_client.cpp --bind -DUSE_EMSCRIPTEN -o spdr.js
 
-java: libspdr.so
+java: spdr_client.cpp spdr_client.h
+	# Build library without support
+	$(CC) -c -fPIC spdr_client.cpp -o spdr.o
+	$(CC) -shared -o libspdr.so spdr.o
+
+	# Copy libraries for Maven to use
 	mkdir -p ../java/target/classes/spdr/client/linux-x86_64
 	cp libspdr.so ../java/target/classes/spdr/client/linux-x86_64
+
+python: spdr_client.cpp spdr_client.h
+	# Build library with boost support
+	$(CC) -c -fPIC spdr_client.cpp -o spdr.o -Iboost/ -I/usr/include/python3.11 -DUSE_PYTHON
+	$(CC) -shared -Wl,-soname,libspdr.so -o libspdr.so spdr.o -lpython3.11 -lboost_python311 -Iboost -Lboost/stage/lib

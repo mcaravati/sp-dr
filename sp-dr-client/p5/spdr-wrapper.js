@@ -3,6 +3,7 @@ if (!window.p5) {
     throw new Error('p5 is not loaded');
 }
 
+// Disable p5 autolaunch
 p5.instance = true;
 
 // Load the WASM module
@@ -21,6 +22,7 @@ script.onload = () => {
             return new Module.Client(host, port);
         }
 
+        // Enable p5
         new p5();
     }
 }

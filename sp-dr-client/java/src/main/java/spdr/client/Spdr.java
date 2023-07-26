@@ -11,13 +11,9 @@ public class Spdr {
         public Client(String host, int port) { allocate(host, port); }
         private native void allocate(String host, int port);
 
-        public native void connect();
-        public native void disconnect();
+        public native int connect();
+        public native int disconnect();
     }
 
-    public static void main(String[] args) {
-        Client client = new Client("localhost", 8080);
-        client.connect();
-        client.disconnect();
-    }    
+    public static void main(String[] args) {}    
 }

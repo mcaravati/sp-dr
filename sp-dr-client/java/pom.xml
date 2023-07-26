@@ -28,6 +28,12 @@
       <artifactId>javacpp</artifactId>
       <version>${javacpp.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.3.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -165,7 +171,7 @@
 								eu.atspace.hash.FooLib is the wrapper class
 							 -->
               <commandlineArgs>
-                -jar ${project.build.directory}/lib/javacpp-${javacpp.version}.jar -o libspdr.so -Xcompiler -L${basedir}/target/classes/spdr/client/linux-x86_64 -Xcompiler -I${basedir}/../lib -classpath target/classes spdr.client.Spdr
+                -jar ${project.build.directory}/lib/javacpp-${javacpp.version}.jar -Xcompiler -L${basedir}/target/classes/spdr/client/linux-x86_64 -Xcompiler -I${basedir}/../lib -classpath target/classes spdr.client.Spdr
               </commandlineArgs>
             </configuration>
           </execution>
