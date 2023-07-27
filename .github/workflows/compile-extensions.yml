@@ -1,40 +1,29 @@
 name: compile-extensions
 on: [push]
 jobs:
-  compile-puredata-linux-x86_64:
+  compile-python-linux-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Install cmake
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake
-      - name: Install puredata
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y puredata-dev
-      - name: Build and install flext
-        continue-on-error: true
-        run: |
-          cd creative-extensions/puredata/flext
-          ./bootstrap.sh
-          ./configure --enable-system=pd --with-sdkdir=/usr/include/pd
-          make -j$(nproc)
-          sudo make install
-      - name: Build puredata externals
-        run: |
-          cd creative-extensions/puredata
-          mkdir build
-          cd build
-          cmake ..
-          make
-      - uses: actions/upload-artifact@v3
+      - uses: actions/setup-python@v4
         with:
-          name: ergojunior.pd_linux
-          path: ~/Documents/Pd/externals/ergojunior/ergojunior.pd_linux
-  compile-processing:
+          python-version: '3.11' 
+      - name: Install Python dev dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3.11-dev
+      - name: Install boost libraries
+        run: |
+          cd sp-dr-client/lib
+          chmod +x install_boost.sh
+          ./install_boost.sh
+          make python
+          cd ../python
+          chmod +x bootstrap.sh
+          ./bootstrap.sh test
+  compile-java-linux-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,9 +36,9 @@ jobs:
       # Compile the extension
       - name: Compile the extension
         run: |
-          cd creative-extensions/processing
-          make
+          cd sp-dr-client/java
+          mvn clean install
       - uses: actions/upload-artifact@v3
         with:
-          name: ergojunior.jar
-          path: creative-extensions/processing/target/ergo_junior_controller-1.0-SNAPSHOT.jar
+          name: sp-dr.jar
+          path: /home/siddhartha/Documents/sp-dr/sp-dr-client/java/target/spdr_client-1.0-SNAPSHOT-jar-with-dependencies.jar

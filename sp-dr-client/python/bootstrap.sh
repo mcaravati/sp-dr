@@ -2,6 +2,7 @@
 
 ORIGIN_DIR=$(pwd)
 
+
 build_library() {
     cd ../lib
     make clean
@@ -15,7 +16,7 @@ build_library() {
 run_test() {
     LIBRARY_LOCATION=$(pwd)
     cd test
-    PYTHONPATH=${LIBRARY_LOCATION} python main.py
+    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:../../lib/boost/stage/lib" PYTHONPATH=${LIBRARY_LOCATION} python main.py
     rm ../libspdr.so
 }
 
