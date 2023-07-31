@@ -7,28 +7,16 @@
 namespace spdr {
     class Client {
     public:
-        explicit Client(const std::string host, const int port);
-        ~Client();
-        int connect() const;
-        int disconnect() const;
-    private:
-        std::string host;
-        int port;
+        virtual ~Client() {};
+        virtual int connect() = 0;
+        virtual int disconnect() = 0;
+        virtual int set_motor(const unsigned int motor_id, const float angle) const = 0;
+        virtual int toggle_led(const unsigned int motor_id, const bool state) const = 0;
+        virtual int toggle_torque(const unsigned int motor_id, const bool state) const = 0;
+        virtual int set_speed(const unsigned int motor_id, const float speed) const = 0;
+        virtual int inverse_kinematics(const float x, const float y, const float z) const = 0;
     };
 }
-
-#ifdef USE_EMSCRIPTEN // Javascript / WASM bindings
-#include <emscripten.h>
-#include <emscripten/bind.h>
-
-EMSCRIPTEN_BINDINGS(spdr_client) {
-    emscripten::class_<spdr::Client>("Client")
-        .constructor<std::string, int>()
-        .function("connect", &spdr::Client::connect)
-        .function("disconnect", &spdr::Client::disconnect)
-        ;
-}
-#endif // USE_EMSCRIPTEN
 
 #ifdef USE_PYTHON // Python bindings using Boost::Python
 #include <boost/python.hpp>

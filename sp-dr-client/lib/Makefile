@@ -5,8 +5,9 @@ all: webassembly java python
 clean:
 	rm -f *.o *.so *.js *.wasm
 
-webassembly: spdr_client.cpp spdr_client.h
-	em++ spdr_client.cpp --bind -DUSE_EMSCRIPTEN -o spdr.js
+webassembly: spdr_client_websocket.cpp spdr_client_websocket.hpp spdr_client.h
+	em++ spdr_client_websocket.cpp --bind -DUSE_EMSCRIPTEN -lwebsocket.js -o spdr.js
+	mv spdr.{js,wasm} ../js
 
 java: spdr_client.cpp spdr_client.h
 	# Build library without support

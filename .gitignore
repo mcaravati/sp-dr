@@ -6,3 +6,7 @@ build/
 target/
 *.o
 *.so
+spdr.wasm
+spdr.js
+emsdk
+node_modules
