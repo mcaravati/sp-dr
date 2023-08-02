@@ -18,7 +18,7 @@ java: spdr_client.cpp spdr_client.h
 	mkdir -p ../java/target/classes/spdr/client/linux-x86_64
 	cp libspdr.so ../java/target/classes/spdr/client/linux-x86_64
 
-python: spdr_client.cpp spdr_client.h
+python: spdr_client_osc.cpp spdr_client_osc.hpp spdr_client.h
 	# Build library with boost support
-	$(CC) -c -fPIC spdr_client.cpp -o spdr.o -Iboost/ -I/usr/include/python3.11 -DUSE_PYTHON
+	$(CC) -c -fPIC spdr_client_osc.cpp -o spdr.o -Iboost/ -I/usr/include/python3.11 -Ioscpp/include
 	$(CC) -shared -Wl,-soname,libspdr.so -o libspdr.so spdr.o -lpython3.11 -lboost_python311 -Iboost -Lboost/stage/lib

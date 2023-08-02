@@ -10,3 +10,4 @@ spdr.wasm
 spdr.js
 emsdk
 node_modules
+sp-dr-client/lib/boost*

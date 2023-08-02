@@ -1,5 +1,8 @@
 #ifndef __SPDR_CLIENT_WEBSOCKET_HPP__
+#define __SPDR_CLIENT_WEBSOCKET_HPP__
 
+#include <string>
+#include <iostream>
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <emscripten/websocket.h>

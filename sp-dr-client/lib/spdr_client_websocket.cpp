@@ -3,16 +3,14 @@
 #include <emscripten/emscripten.h>
 #include <cstdio> // std::snprintf, std::sprintf
 #include <memory> // std::unique_ptr
+#include <format>
 
 #define BUFFER_SIZE 1024
 
-std::unique_ptr<const char[]> serialize_float(const float value) {
-    constexpr int buffer_size = 32;
-    std::unique_ptr<char[]> buffer(new char[buffer_size]);
+std::unique_ptr<std::string> serialize_float(const float value) {
+    std::unique_ptr<std::string> serialized(std::format("{:.2f}", value))
 
-    std::snprintf(buffer.get(), buffer_size, "%.2f", value);
-
-    return buffer;
+    return serialized;
 }
 
 EM_BOOL onopen(int eventType, const EmscriptenWebSocketOpenEvent *websocketEvent, void *userData) {
