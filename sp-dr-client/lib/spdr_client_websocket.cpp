@@ -3,12 +3,15 @@
 #include <emscripten/emscripten.h>
 #include <cstdio> // std::snprintf, std::sprintf
 #include <memory> // std::unique_ptr
-#include <format>
+#include <sstream>
+#include <iomanip>
 
 #define BUFFER_SIZE 1024
 
-std::unique_ptr<std::string> serialize_float(const float value) {
-    std::unique_ptr<std::string> serialized(std::format("{:.2f}", value))
+std::string serialize_float(const float value) {
+    std::ostringstream stream;
+    stream << std::fixed << std::setprecision(2) << value;
+    std::string serialized(stream.str());
 
     return serialized;
 }
@@ -47,13 +50,10 @@ namespace spdr {
     }
 
     int WebsocketClient::connect() {
-        char host_buffer[BUFFER_SIZE] = {0};
-        char buffer[BUFFER_SIZE] = {0};
-        std::copy(this->host.begin(), this->host.end(), host_buffer);
-        sprintf(buffer, "ws://%s:%d", host_buffer, this->port);
+        std::string address("ws://" + this->host + ":" + std::to_string(this->port));
 
         EmscriptenWebSocketCreateAttributes attributes = {
-            buffer,
+            address.c_str(),
             NULL,
             EM_TRUE
         };
@@ -83,10 +83,9 @@ namespace spdr {
     }
 
     int WebsocketClient::set_motor(const unsigned int motor_id, const float angle) const {
-        char buffer[BUFFER_SIZE] = {0};
-        std::sprintf(buffer, "{\"type\":\"set-motor\",\"data\":[%d,%s]}", motor_id, serialize_float(angle).get());
+        std::string payload("{\"type\":\"set-motor\",\"data\":[" + std::to_string(motor_id) + "," + serialize_float(angle) + "]}");
 
-        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, buffer);
+        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, payload.c_str());
         if (result) {
             std::cerr << "Error while setting motor: " << result << std::endl;
             return 1;
@@ -96,10 +95,9 @@ namespace spdr {
     }
 
     int WebsocketClient::toggle_led(const unsigned int motor_id, const bool state) const {
-        char buffer[BUFFER_SIZE] = {0};
-        std::sprintf(buffer, "{\"type\":\"set-led\",\"data\":[%d,%d]}", motor_id, int(state));
+        std::string payload("{\"type\":\"set-led\",\"data\":[" + std::to_string(motor_id) + "," + std::to_string(state) + "]}");
 
-        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, buffer);
+        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, payload.c_str());
         if (result) {
             std::cerr << "Error while toggling led: " << result << std::endl;
             return 1;
@@ -109,10 +107,9 @@ namespace spdr {
     }
 
     int WebsocketClient::toggle_torque(const unsigned int motor_id, const bool state) const {
-        char buffer[BUFFER_SIZE] = {0};
-        std::sprintf(buffer, "{\"type\":\"set-torque\",\"data\":[%d,%d]}", motor_id, int(state));
+        std::string payload("{\"type\":\"set-torque\",\"data\":[" + std::to_string(motor_id) + "," + std::to_string(state) + "]}");
 
-        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, buffer);
+        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, payload.c_str());
         if (result) {
             std::cerr << "Error while toggling torque: " << result << std::endl;
             return 1;
@@ -122,10 +119,9 @@ namespace spdr {
     }
 
     int WebsocketClient::set_speed(const unsigned int motor_id, const float speed) const {
-        char buffer[BUFFER_SIZE] = {0};
-        std::sprintf(buffer, "{\"type\":\"set-speed\",\"data\":[%d,%s]}", motor_id, serialize_float(speed).get());
+        std::string payload("{\"type\":\"set-speed\",\"data\":[" + std::to_string(motor_id) + "," + serialize_float(speed) + "]}");
 
-        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, buffer);
+        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, payload.c_str());
         if (result) {
             std::cerr << "Error while setting motor speed: " << result << std::endl;
             return 1;
@@ -135,10 +131,9 @@ namespace spdr {
     }
 
     int WebsocketClient::inverse_kinematics(const float x, const float y, const float z) const {
-        char buffer[BUFFER_SIZE] = {0};
-        std::sprintf(buffer, "{\"type\":\"inverse-kinematics\",\"data\":[%s,%s,%s]}", serialize_float(x).get(), serialize_float(y).get(), serialize_float(z).get());
+        std::string payload("{\"type\":\"inverse-kinematics\",\"data\":[" + serialize_float(x) + "," + serialize_float(y) + "," + serialize_float(z) + "]}");
 
-        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, buffer);
+        EMSCRIPTEN_RESULT result = emscripten_websocket_send_utf8_text(this->websocket, payload.c_str());
         if (result) {
             std::cerr << "Error while sending inverse kinematics coordinates: " << result << std::endl;
             return 1;
