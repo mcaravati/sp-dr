@@ -6,3 +6,5 @@ build/
 creative-extensions/processing/target
 osc_client.py
 float_to_hex.py
+creative-extensions/python/dist
+creative-extensions/python/ergojunior.egg-info
