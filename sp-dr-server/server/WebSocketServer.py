@@ -16,6 +16,9 @@ class WebSocketServer(ControlServer):
 
         self._websocket_server = None
 
+        self._host = kwargs['host']
+        self._port = kwargs['port']
+
         self._function_map = {
             'set-motor': self.forward_kinematics_handler,
             'set-led': self.motor_led_handler,
@@ -28,7 +31,7 @@ class WebSocketServer(ControlServer):
         """
             Wrapper for the websocket server runner
         """
-        async with serve(self._message_handler, "localhost", 8080):
+        async with serve(self._message_handler, self._host, self._port):
             await asyncio.Future()
 
     def start(self):

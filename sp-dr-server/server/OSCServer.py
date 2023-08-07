@@ -18,9 +18,14 @@ class OSCServer(ControlServer):
 
         self._osc_server = None
 
-        logging.basicConfig(format='%(asctime)s - %(threadName)s ø %(name)s - %(levelname)s - %(message)s')
-        self._logger = logging.getLogger("osc")
-        self._logger.setLevel(logging.DEBUG)
+        self._host = kwargs['host']
+        self._port = kwargs['port']
+
+        if kwargs['verbose']:
+            self._logger = logging.getLogger("OSC server")
+            self._logger.setLevel(logging.DEBUG)
+        else:
+            self._logger = None
     
     def start(self) -> None:
         """
@@ -30,7 +35,7 @@ class OSCServer(ControlServer):
             logger=self._logger,
         )
 
-        osc_udp_server("127.0.0.1", 9000, "server")
+        osc_udp_server(self._host, self._port, "server")
 
         osc_method("/set-motor", self.forward_kinematics_handler)
         osc_method("/set-led", self.motor_led_handler)

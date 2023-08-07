@@ -3,6 +3,7 @@ from server.WebSocketServer import WebSocketServer
 from robot_control.SerialControl import SerialControl
 from robot_control.DummyRobotControl import DummyRobotControl
 import argparse
+import logging
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -17,37 +18,55 @@ if __name__ == "__main__":
         help='Use a dummy robot control instead of a serial connection'
     )
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
-    parser.add_argument('--serial-port', type=str, help='Serial port to connect to')
     parser.add_argument('-p', '--platform', type=str, help='Platform to connect to', required=True)
+    parser.add_argument('--serial-port', type=str, help='Serial port to connect to', default="/dev/ttyACM0")
+    parser.add_argument('--baudrate', type=int, help='The baudrate to use for the serial connection', default=115200)
+    parser.add_argument('--host', type=str, help="The address on which the server should bind", default='127.0.0.1')
+    parser.add_argument('--port', type=str, help="The port on which the server should listen", default=9000)
 
     args = parser.parse_args()
     robot_control = None
     server = None
 
+    logging.basicConfig(format='[%(name)s]\t[%(levelname).1s] %(message)s')
+    logger = logging.getLogger('Main thread')
+    logger.setLevel(logging.DEBUG)
+
     if args.dummy:
         robot_control = DummyRobotControl()
     else:
         robot_control = SerialControl(
-            port=args.serial_port if args.serial_port else "/dev/ttyACM0",
-            baudrate=115200,
+            port=args.serial_port,
+            baudrate=args.baudrate,
             verbose=args.verbose
         )
 
     if args.platform in ['processing', 'puredata', 'python']:
         server = OSCServer(
             robot_control=robot_control,
+            host=args.host,
+            port=args.port,
+            verbose=args.verbose
         )
     elif args.platform in ['p5']:
         server = WebSocketServer(
             robot_control=robot_control,
+            host=args.host,
+            port=args.port,
+            verbose=args.verbose
         )
 
-    server.start()
+    try:
+        logger.info("Enter 'q' or press Ctrl+C to exit")
+        server.start()
 
-    while True:
-        if input() == "q":
-            break
+        while True:
+            if input() == "q":
+                break
 
-    server.stop()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
 else:
     raise Exception("This script should be run as main")

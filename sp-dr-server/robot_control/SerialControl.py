@@ -30,8 +30,13 @@ class SerialControl(RobotControl):
         self._serial = serial.Serial(kwargs.get("port", "/dev/ttyACM0"), kwargs.get("baudrate", 115200), timeout=1)
         self._verbose = kwargs.get("verbose", False)
 
-        if self._verbose:
-            print(f"SerialControl: {self._serial.name} opened")
+        if kwargs['verbose']:
+            self._logger = logging.getLogger('Serial control')
+            self._logger.setLevel(logging.DEBUG)
+
+            self._logger.info("SerialControl: %s opened", self._serial.name)
+        else:
+            self._logger = None
 
     def _send_serial(self, op_code, motor_id, value: str) -> None:
         """
