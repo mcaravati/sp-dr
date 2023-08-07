@@ -59,16 +59,9 @@ protected:
 
     void handle_angle_change(float motor_angle_arg)
     {
-        int motor_angle = static_cast<int>(motor_angle_arg);
+        this->motor_angle = motor_angle_arg;
 
-        if (motor_angle < 0 || motor_angle > 255)
-        {
-            error("Invalid motor angle: %d", motor_angle);
-            return;
-        }
-        this->motor_angle = motor_angle;
-
-        post("Motor %d angle: %d", this->motor_id, this->motor_angle);
+        post("Motor %d angle: %f", this->motor_id, this->motor_angle);
         this->motor_control();
     }
 
@@ -76,7 +69,7 @@ private:
     struct sockaddr_in osc_server;
     int fd;
     int motor_id;
-    int motor_angle;
+    float motor_angle;
 
     FLEXT_CALLBACK_1(handle_id_change, float);
     FLEXT_CALLBACK_1(handle_angle_change, float);
@@ -85,7 +78,7 @@ private:
     {
         char buffer[BUFFER_SIZE] = {0};
 
-        int len = tosc_writeMessage(buffer, sizeof(buffer), "/set-motor", "ii", this->motor_id, this->motor_angle);
+        int len = tosc_writeMessage(buffer, sizeof(buffer), "/set-motor", "if", this->motor_id, this->motor_angle);
 
         if (connect(this->fd, (struct sockaddr *)&(this->osc_server), sizeof(this->osc_server)) < 0)
         {

@@ -21,7 +21,7 @@ class Client:
     def toggle_torque(self, motor_id: int, state: bool) -> None:
         self._send_message(oscbuildparse.OSCMessage("/set-torque", None, [motor_id, state]))
 
-    def set_speed(self, motor_id: int, speed: float) -> None:
+    def set_speed(self, motor_id: int, speed: int) -> None:
         self._send_message(oscbuildparse.OSCMessage("/set-speed", None, [motor_id, speed]))
 
     def inverse_kinematics(self, x: float, y: float, z: float) -> None:

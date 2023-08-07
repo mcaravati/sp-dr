@@ -33,7 +33,7 @@ if __name__ == "__main__":
             verbose=args.verbose
         )
 
-    if args.platform in ['processing', 'puredata']:
+    if args.platform in ['processing', 'puredata', 'python']:
         server = OSCServer(
             robot_control=robot_control,
         )

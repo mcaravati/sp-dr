@@ -20,7 +20,7 @@ public class ErgoJuniorController {
     private OscP5 oscP5;
     private NetAddress oscServerAddress;
 
-    private HashMap<Integer, Integer> motorMap = new HashMap<>();
+    private HashMap<Integer, Float> motorMap = new HashMap<>();
 
     public ErgoJuniorController(PApplet parent, String oscServerIP, int oscServerPort) {
         if (parent == null) {
@@ -45,9 +45,9 @@ public class ErgoJuniorController {
      * Save the motor angle in memory and send it to the OSC server if it has changed.
      * 
      * @param motorId {Integer} The motor id.
-     * @param motorAngle {Integer} The motor angle.
+     * @param motorAngle {Float} The motor angle.
      */
-    public void setMotorAngle(Integer motorId, Integer motorAngle) {
+    public void setMotorAngle(Integer motorId, Float motorAngle) {
         if (motorId < 1 || motorId > 6) {
             throw new IllegalArgumentException(MOTOR_ID_ERROR_MESSAGE);
         }
@@ -56,7 +56,7 @@ public class ErgoJuniorController {
         }
 
         if (this.motorMap.containsKey(motorId)) {
-            int prevAngle = this.motorMap.get(motorId);
+            float prevAngle = this.motorMap.get(motorId);
             if (prevAngle != motorAngle) {
                 this.motorMap.put(motorId, motorAngle);
                 sendPacket("/set-motor", Arrays.asList(motorId, motorAngle));
