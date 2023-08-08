@@ -5,6 +5,7 @@ from robot_control.RobotControl import RobotControl
 import serial
 import struct
 import time
+import logging
 
 last_function_call = time.time()
 
