@@ -18,7 +18,7 @@ if __name__ == "__main__":
         help='Use a dummy robot control instead of a serial connection'
     )
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
-    parser.add_argument('-p', '--platform', type=str, help='Platform to connect to', required=True)
+    parser.add_argument('-p', '--protocol', type=str, help='Protocol to use of the server/client communication', required=True)
     parser.add_argument('--serial-port', type=str, help='Serial port to connect to', default="/dev/ttyACM0")
     parser.add_argument('--baudrate', type=int, help='The baudrate to use for the serial connection', default=115200)
     parser.add_argument('--host', type=str, help="The address on which the server should bind", default='127.0.0.1')
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
 
     if args.dummy:
-        robot_control = DummyRobotControl()
+        robot_control = DummyRobotControl()`
     else:
         robot_control = SerialControl(
             port=args.serial_port,
@@ -41,14 +41,14 @@ if __name__ == "__main__":
             verbose=args.verbose
         )
 
-    if args.platform in ['processing', 'puredata', 'python']:
+    if args.protocol == 'osc':
         server = OSCServer(
             robot_control=robot_control,
             host=args.host,
             port=args.port,
             verbose=args.verbose
         )
-    elif args.platform in ['p5']:
+    elif args.protocol == 'websockets':
         server = WebSocketServer(
             robot_control=robot_control,
             host=args.host,
