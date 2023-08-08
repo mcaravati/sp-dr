@@ -33,7 +33,7 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
 
     if args.dummy:
-        robot_control = DummyRobotControl()`
+        robot_control = DummyRobotControl()
     else:
         robot_control = SerialControl(
             port=args.serial_port,
