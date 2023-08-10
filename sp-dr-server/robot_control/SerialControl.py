@@ -5,6 +5,7 @@ from robot_control.RobotControl import RobotControl
 import serial
 import struct
 import time
+import logging
 
 last_function_call = time.time()
 
@@ -47,6 +48,9 @@ class SerialControl(RobotControl):
         payload = header + value
 
         self._serial.write(bytearray.fromhex(payload))
+
+        if self._logger:
+            self._logger.info(self._serial.read(120))
 
     def set_led_on(self, motor: int = 1) -> None:
         """
