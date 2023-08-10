@@ -70,7 +70,7 @@ p5.prototype.toggleLED = function (motor, state) {
     const message = JSON.stringify({
         type: 'set-led',
         data: [
-            led,
+            motor,
             state
         ]
     });
