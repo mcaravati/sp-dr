@@ -61,7 +61,7 @@ p5.prototype.setMotor = function (motor, position) {
  * @param {boolean} state The state of the LED
  */
 p5.prototype.toggleLED = function (motor, state) {
-    if (!motor || !state) {
+    if (motor === undefined || state === undefined ) {
         throw new Error('toggleLED: Motor and state must be defined');
     } else if (typeof motor !== 'number' || typeof state !== 'boolean') {
         throw new Error('toggleLED: Motor must be a number and state must be a boolean');
