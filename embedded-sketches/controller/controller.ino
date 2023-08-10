@@ -11,6 +11,8 @@
 #define VELOCITY 0
 #define BUFFER_SIZE 4
 
+#define DEBUG
+
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
 // This namespace is required to use Control table item names
@@ -93,7 +95,7 @@ void loop()
     }
 
 #ifdef DEBUG
-    DEBUG_SERIAL.printf("Received packet: Header: 0x%02X, Motor ID: %d, Data: 0x%02X\n", header, motorID, data);
+    DEBUG_SERIAL.printf("Received packet: Header: 0x%02X, Motor ID: %d\n", header, motorID);
 #endif
 
     switch (header)
@@ -150,6 +152,9 @@ void loop()
           float data;
           memcpy(&data, buffer, 4);
 
+#ifdef DEBUG
+          DEBUG_SERIAL.printf("Float value: %f\n", data);
+#endif
           _set_motor(motorID, data);
           break;
         }

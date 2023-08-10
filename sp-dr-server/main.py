@@ -57,6 +57,7 @@ if __name__ == "__main__":
         )
 
     try:
+        logger.info(f"Server running on {args.host}:{args.port}")
         logger.info("Enter 'q' or press Ctrl+C to exit")
         server.start()
 
