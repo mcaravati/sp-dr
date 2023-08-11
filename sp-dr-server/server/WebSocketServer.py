@@ -2,6 +2,7 @@ from server.ControlServer import ControlServer
 from websockets import serve
 import asyncio
 import json
+import logging
 
 class UnknownMessageTypeException(Exception):
     """
@@ -25,7 +26,11 @@ class WebSocketServer(ControlServer):
             'set-torque': self.torque_handler,
             'set-speed': self.speed_handler,
             'inverse-kinematics': self.inverse_kinematics_handler,
+            'connected': self.manifest_connection
         }
+
+        self._logger = logging.getLogger("Websocket server")
+        self._logger.setLevel(logging.DEBUG)
 
     async def _server_wrapper(self):
         """

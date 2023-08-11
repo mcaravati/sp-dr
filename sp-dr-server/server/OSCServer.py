@@ -21,18 +21,17 @@ class OSCServer(ControlServer):
         self._host = kwargs['host']
         self._port = kwargs['port']
 
-        if kwargs['verbose']:
-            self._logger = logging.getLogger("OSC server")
-            self._logger.setLevel(logging.DEBUG)
-        else:
-            self._logger = None
+        self._verbose = kwargs['verbose']
+
+        self._logger = logging.getLogger("OSC server")
+        self._logger.setLevel(logging.DEBUG)
     
     def start(self) -> None:
         """
             Start the server
         """
         osc_startup(
-            logger=self._logger,
+            logger=self._logger if self._verbose else None
         )
 
         osc_udp_server(self._host, self._port, "server")
@@ -42,6 +41,7 @@ class OSCServer(ControlServer):
         osc_method("/set-torque", self.torque_handler)
         osc_method("/set-speed", self.speed_handler)
         osc_method("/inverse-kinematics", self.inverse_kinematics_handler)
+        osc_method("/connected", self.manifest_connection)
 
         self._osc_server = StoppableThread(target=self._osc_process)
         self._osc_server.start()

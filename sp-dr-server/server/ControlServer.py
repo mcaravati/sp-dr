@@ -3,6 +3,7 @@
 """
 from abc import ABC, abstractmethod
 from robot_control.RobotControl import RobotControl
+import logging
 
 class ControlServer(ABC):
     """
@@ -69,6 +70,12 @@ class ControlServer(ABC):
             Handle the message for the motor speed
         """
         self._set_motor_speed(*args)
+
+    def manifest_connection(self, args) -> None:
+        if not self._logger:
+            return
+        
+        self._logger.info("Client connected")
 
     def _set_motor(self, motor: int = 1, value: float = 0.0) -> None:
         """

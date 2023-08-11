@@ -39,6 +39,8 @@ public class ErgoJuniorController {
         this.oscServerAddress = new NetAddress(oscServerIP, oscServerPort);
         this.parent = parent;
         this.oscP5 = new OscP5(this.parent, 12000);
+
+        sendPacket("/connected", Arrays.asList(new Integer(1)));
     }
 
     /**

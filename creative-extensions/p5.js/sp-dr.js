@@ -15,6 +15,11 @@ websocket.onopen = function () {
     console.info('Websocket connection opened');
     connectionOpened = true;
 
+    websocket.send(JSON.stringify({
+        type: 'connected',
+        data: []
+    }));
+
     messageQueue.forEach(message => websocket.send(message));
 }
 websocket.onclose = function () {

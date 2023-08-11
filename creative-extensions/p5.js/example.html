@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- This p5.js CDN import is required to run your sketch -->
+    <!-- If you want, you can download it locally and import it here instead of using a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js" integrity="sha512-bcfltY+lNLlNxz38yBBm/HLaUB1gTV6I0e+fahbF9pS6roIdzUytozWdnFV8ZnM6cSAG5EbmO0ag0a/fLZSG4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <title>SP//dr p5.js example</title>
+</head>
+<body>
+    <script>
+        // The connection settings for your websocket server
+        let address = "localhost";
+        let port = 9000;
+
+        let ledArray = new Array(6).fill(false);
+
+        // Sample code making the Ergo Jr blink
+        function recursiveSleep() {
+            for (let motorIndex = 0; motorIndex < ledArray.length; motorIndex++) {
+                toggleLED(motorIndex + 1, ledArray[motorIndex]);
+                ledArray[motorIndex] = !ledArray[motorIndex];
+            }
+
+            setTimeout(() => recursiveSleep(), 1000);
+        }
+
+        function setup() {
+            recursiveSleep();
+        }
+
+        function draw() { }
+    </script>
+
+    <script src="sp-dr.js"></script>
+</body>
+</html>

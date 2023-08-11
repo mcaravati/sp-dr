@@ -8,6 +8,8 @@ class Client:
         osc_startup()
         osc_udp_client(host, port, self._name)
 
+        self._send_message(oscbuildparse.OSCMessage("/connected", None, [True])) # The 'True' value is required or else the message is ignored by the server
+
     def _send_message(self, message: oscbuildparse.OSCMessage) -> None:
         osc_send(message, self._name)
         osc_process()
