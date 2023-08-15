@@ -29,7 +29,7 @@ class DummyRobotControl(RobotControl):
         self._logger.info("DummyRobotControl: Set torque of motor %s off", motor)
 
     def set_motor_speed(self, motor: int = 1, speed: int = 0) -> None:
-        self._logger.info("DummyRobotControl: Set motor %s speed to %s", speed)
+        self._logger.info("DummyRobotControl: Set motor %s speed to %s", motor, speed)
 
     def compute_angles(self, x: float = 0, y: float = 0, z: float = 0) -> None:
         self._logger.info("DummyRobotControl: Compute angles for x=%s, y=%s, z=%s", x, y, z)
