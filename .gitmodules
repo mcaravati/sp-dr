@@ -1,6 +1,0 @@
-[submodule "creative-extensions/puredata/flext"]
-	path = creative-extensions/puredata/flext
-	url = git@github.com:grrrr/flext.git
-[submodule "creative-extensions/puredata/tinyosc"]
-	path = creative-extensions/puredata/tinyosc
-	url = git@github.com:mhroth/tinyosc.git
