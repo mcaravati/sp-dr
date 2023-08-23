@@ -70,5 +70,5 @@ class OSCServer(ControlServer):
     def speed_handler(self, *args) -> None:
         return super().speed_handler(args)
     
-    def inverse_kinematics_handler(self, args) -> None:
+    def inverse_kinematics_handler(self, *args) -> None:
         return super().inverse_kinematics_handler(args)
