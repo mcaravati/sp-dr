@@ -10,6 +10,7 @@
 #define ANGLE_TOLERANCE 0.5
 #define VELOCITY 0
 #define BUFFER_SIZE 4
+#define NUMBER_OF_MOTORS 6
 
 #define DEBUG
 
@@ -28,7 +29,7 @@ void setup()
   dxl.begin(MOTOR_BAUDRATE);
   dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);
 
-  for (int motor_index = 1; motor_index <= 6; motor_index++)
+  for (int motor_index = 1; motor_index <= NUMBER_OF_MOTORS; motor_index++)
   {
     // Get DYNAMIXEL information
     dxl.ping(motor_index);
@@ -86,7 +87,7 @@ void loop()
     byte header = buffer[0];
     byte motorID = buffer[1];
 
-    if (motorID < 1 || motorID > 6)
+    if (motorID < 1 || motorID > NUMBER_OF_MOTORS)
     {
 #ifdef DEBUG
       DEBUG_SERIAL.println("Invalid motor ID");

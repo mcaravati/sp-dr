@@ -39,11 +39,11 @@ class SerialControl(RobotControl):
         else:
             self._logger = None
 
-        for i in range(0, 6):
+        for i in range(0, kwargs['nb_motors']):
             self.set_led_on(i + 1)
             time.sleep(0.5)
         
-        for i in range(0, 6):
+        for i in range(0, kwargs['nb_motors']):
             self.set_led_off(i + 1)
 
     def _send_serial(self, op_code, motor_id, value: str) -> None:

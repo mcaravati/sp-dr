@@ -4,6 +4,7 @@
 from abc import ABC, abstractmethod
 import ikpy.chain as ikchain
 import math
+import numpy as np
 
 urdf_file = "simulator/ergo_jr/ergo_jr.urdf"
 ergo_jr_chain = ikchain.Chain.from_urdf_file(urdf_file)
@@ -65,16 +66,10 @@ class RobotControl(ABC):
         """
             Inverse kinematics handler
         """
-        for index, motor_angle in enumerate(ergo_jr_chain.inverse_kinematics([x, y, z])):
+        result = ergo_jr_chain.inverse_kinematics([x, y, z])
+        angles = np.degrees(result)
+        for index, motor_angle in enumerate(angles):
             # Angle is in radian, convert to degree
-            motor_angle = math.degrees(motor_angle)
-
-            # Truncate
-            if motor_angle > 255:
-                motor_angle = 255
-            elif motor_angle < 0:
-                motor_angle = 0
-
-            self.set_motor_angle(index + 1, motor_angle)  
+            self.set_motor_angle(index + 1, (motor_angle + 360) % 360)  
         
         
